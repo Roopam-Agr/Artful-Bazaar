@@ -63,3 +63,5 @@ function AddProduct() {
 }
 
 export default AddProduct
+
+// frontend completed
