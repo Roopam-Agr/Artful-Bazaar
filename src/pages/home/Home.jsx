@@ -3,6 +3,7 @@ import Layout from "../../components/layout/Layout"
 import HeroSection from "../../components/heroSection/HeroSection"
 import Filter from "../../components/filter/Filter"
 import ProductCard from "../../components/productCard/ProductCard"
+import Track from "../../components/track/Track"
 
 function Home() {
   return (
@@ -10,6 +11,7 @@ function Home() {
       <HeroSection />
       <Filter />
       <ProductCard />
+      <Track />
     </Layout>
   )
 }
