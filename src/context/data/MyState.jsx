@@ -9,6 +9,7 @@ import {
   query,
 } from "firebase/firestore"
 import { fireDB } from "../../firebase/FirebaseConfig"
+import { toast } from "react-toastify"
 
 function MyState(props) {
   const [mode, setMode] = useState("light")
@@ -55,6 +56,9 @@ function MyState(props) {
       const productRef = collection(fireDB, "products")
       await addDoc(productRef, products)
       toast.success("Product Add successfully")
+      setTimeout(() => {
+        window.location.href = "/dashboard"
+      }, 800)
       getProductData()
       setLoading(false)
     } catch (error) {

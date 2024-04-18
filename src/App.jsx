@@ -22,7 +22,7 @@ import AddProduct from "./pages/admin/pages/AddProduct"
 import UpdateProduct from "./pages/admin/pages/UpdateProduct"
 
 import { ToastContainer } from "react-toastify"
-
+import "react-toastify/dist/ReactToastify.css"
 function App() {
   return (
     <MyState>
