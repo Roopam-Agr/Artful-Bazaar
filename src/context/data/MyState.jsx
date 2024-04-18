@@ -7,6 +7,9 @@ import {
   onSnapshot,
   orderBy,
   query,
+  deleteDoc,
+  doc,
+  setDoc,
 } from "firebase/firestore"
 import { fireDB } from "../../firebase/FirebaseConfig"
 import { toast } from "react-toastify"
@@ -96,6 +99,42 @@ function MyState(props) {
     getProductData()
   }, [])
 
+  // update product function
+  const edithandle = (item) => {
+    setProducts(item)
+  }
+
+  // update product
+  const updateProduct = async (item) => {
+    setLoading(true)
+    try {
+      await setDoc(doc(fireDB, "products", products.id), products)
+      toast.success("Product Updated successfully")
+      getProductData()
+      setLoading(false)
+      setTimeout(() => {
+        window.location.href = "/dashboard"
+      }, 800)
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
+
+  // delete product
+  const deleteProduct = async (item) => {
+    try {
+      setLoading(true)
+      await deleteDoc(doc(fireDB, "products", item.id))
+      toast.success("Product Deleted successfully")
+      setLoading(false)
+      getProductData()
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
+
   return (
     <MyContext.Provider
       value={{
@@ -107,6 +146,9 @@ function MyState(props) {
         setProducts,
         addProduct,
         product,
+        edithandle,
+        updateProduct,
+        deleteProduct,
       }}
     >
       {props.children}
