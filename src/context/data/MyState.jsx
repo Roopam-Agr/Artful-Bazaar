@@ -173,6 +173,11 @@ function MyState(props) {
     getUserData()
   }, [])
 
+  // filter logic
+  const [searchkey, setSearchkey] = useState("")
+  const [filterType, setFilterType] = useState("")
+  const [filterPrice, setFilterPrice] = useState("")
+
   return (
     <MyContext.Provider
       value={{
@@ -189,6 +194,12 @@ function MyState(props) {
         deleteProduct,
         order,
         user,
+        searchkey,
+        setSearchkey,
+        filterType,
+        setFilterType,
+        filterPrice,
+        setFilterPrice,
       }}
     >
       {props.children}
