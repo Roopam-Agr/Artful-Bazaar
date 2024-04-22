@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from "react"
 import MyContext from "./MyContext"
+import { fireDB } from "../../firebase/FirebaseConfig"
 import {
   Timestamp,
-  collection,
   addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
-  deleteDoc,
-  doc,
   setDoc,
 } from "firebase/firestore"
-import { fireDB } from "../../firebase/FirebaseConfig"
 import { toast } from "react-toastify"
 
 function MyState(props) {
   const [mode, setMode] = useState("light")
+  const [loading, setLoading] = useState(false)
 
   const toggleMode = () => {
     if (mode === "light") {
       setMode("dark")
-      document.body.style.backgroundColor = "rgb(17,24,39)"
+      document.body.style.backgroundColor = "rgb(17, 24, 39)"
     } else {
       setMode("light")
       document.body.style.backgroundColor = "white"
     }
   }
-
-  const [loading, setLoading] = useState(false)
 
   const [products, setProducts] = useState({
     title: null,
@@ -43,6 +43,7 @@ function MyState(props) {
     }),
   })
 
+  // ********************** Add Product Section  **********************
   const addProduct = async () => {
     if (
       products.title == null ||
@@ -53,25 +54,24 @@ function MyState(props) {
     ) {
       return toast.error("Please fill all fields")
     }
-
+    const productRef = collection(fireDB, "products")
     setLoading(true)
     try {
-      const productRef = collection(fireDB, "products")
       await addDoc(productRef, products)
       toast.success("Product Add successfully")
-      setTimeout(() => {
-        window.location.href = "/dashboard"
-      }, 800)
       getProductData()
+      closeModal()
       setLoading(false)
     } catch (error) {
       console.log(error)
       setLoading(false)
     }
+    setProducts("")
   }
 
   const [product, setProduct] = useState([])
 
+  // ****** get product
   const getProductData = async () => {
     setLoading(true)
     try {
@@ -81,11 +81,11 @@ function MyState(props) {
         // limit(5)
       )
       const data = onSnapshot(q, (QuerySnapshot) => {
-        let productArray = []
+        let productsArray = []
         QuerySnapshot.forEach((doc) => {
-          productArray.push({ ...doc.data(), id: doc.id })
+          productsArray.push({ ...doc.data(), id: doc.id })
         })
-        setProduct(productArray)
+        setProduct(productsArray)
         setLoading(false)
       })
       return () => data
@@ -95,15 +95,9 @@ function MyState(props) {
     }
   }
 
-  useEffect(() => {
-    getProductData()
-  }, [])
-
-  // update product function
   const edithandle = (item) => {
     setProducts(item)
   }
-
   // update product
   const updateProduct = async (item) => {
     setLoading(true)
@@ -112,16 +106,14 @@ function MyState(props) {
       toast.success("Product Updated successfully")
       getProductData()
       setLoading(false)
-      setTimeout(() => {
-        window.location.href = "/dashboard"
-      }, 800)
+      window.location.href = "/dashboard"
     } catch (error) {
-      console.log(error)
       setLoading(false)
+      console.log(error)
     }
+    setProducts("")
   }
 
-  // delete product
   const deleteProduct = async (item) => {
     try {
       setLoading(true)
@@ -130,10 +122,56 @@ function MyState(props) {
       setLoading(false)
       getProductData()
     } catch (error) {
+      // toast.success('Product Deleted Falied')
+      setLoading(false)
+    }
+  }
+
+  const [order, setOrder] = useState([])
+
+  const getOrderData = async () => {
+    setLoading(true)
+    try {
+      const result = await getDocs(collection(fireDB, "orders"))
+      const ordersArray = []
+      result.forEach((doc) => {
+        ordersArray.push(doc.data())
+        setLoading(false)
+      })
+      setOrder(ordersArray)
+      // console.log(ordersArray)
+      setLoading(false)
+    } catch (error) {
       console.log(error)
       setLoading(false)
     }
   }
+
+  const [user, setUser] = useState([])
+
+  const getUserData = async () => {
+    setLoading(true)
+    try {
+      const result = await getDocs(collection(fireDB, "users"))
+      const usersArray = []
+      result.forEach((doc) => {
+        usersArray.push(doc.data())
+        setLoading(false)
+      })
+      setUser(usersArray)
+      console.log(usersArray)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getProductData()
+    getOrderData()
+    getUserData()
+  }, [])
 
   return (
     <MyContext.Provider
@@ -146,9 +184,11 @@ function MyState(props) {
         setProducts,
         addProduct,
         product,
-        edithandle,
         updateProduct,
+        edithandle,
         deleteProduct,
+        order,
+        user,
       }}
     >
       {props.children}
