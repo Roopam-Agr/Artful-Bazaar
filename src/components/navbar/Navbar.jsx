@@ -75,20 +75,6 @@ export default function Navbar() {
                     All Products
                   </Link>
 
-                  {user ? (
-                    <div className="flow-root">
-                      <Link
-                        to={"/order"}
-                        style={{ color: mode === "dark" ? "white" : "" }}
-                        className="-m-2 block p-2 font-medium text-gray-900"
-                      >
-                        Order
-                      </Link>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-
                   {user?.user?.email === "agrawalroopam438@gmail.com" ? (
                     <div className="flow-root">
                       <Link
@@ -208,7 +194,7 @@ export default function Navbar() {
                       className=" text-2xl font-bold text-black  px-2 py-1 rounded"
                       style={{ color: mode === "dark" ? "white" : "" }}
                     >
-                      E-Bharat
+                      Artful Bazaar
                     </h1>
                   </div>
                 </Link>
@@ -223,18 +209,6 @@ export default function Navbar() {
                   >
                     All Products
                   </Link>
-
-                  {user ? (
-                    <Link
-                      to={"/order"}
-                      className="text-sm font-medium text-gray-700 "
-                      style={{ color: mode === "dark" ? "white" : "" }}
-                    >
-                      Order
-                    </Link>
-                  ) : (
-                    ""
-                  )}
 
                   {user?.user?.email === "agrawalroopam438@gmail.com" ? (
                     <Link
