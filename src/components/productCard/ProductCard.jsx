@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react"
 import MyContext from "../../context/data/MyContext"
 import { useDispatch, useSelector } from "react-redux"
 import { addToCart } from "../../redux/cartSlice"
+import { toast } from "react-toastify"
 
 function ProductCard() {
   const context = useContext(MyContext)
@@ -20,7 +21,6 @@ function ProductCard() {
   const cartItems = useSelector((state) => state.cart)
   console.log(cartItems)
 
-  // add to cart
   const addCart = (product) => {
     dispatch(addToCart(product))
     toast.success("add to cart")
@@ -29,7 +29,6 @@ function ProductCard() {
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems))
   }, [cartItems])
-
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-8 md:py-16 mx-auto">
@@ -47,14 +46,12 @@ function ProductCard() {
           {product
             .filter((obj) => obj.title.toLowerCase().includes(searchkey))
             .filter((obj) => obj.category.toLowerCase().includes(filterType))
+            .filter((obj) => obj.price.includes(filterPrice))
+            .slice(0, 8)
             .map((item, index) => {
               const { title, price, description, imageUrl, id } = item
               return (
-                <div
-                  onClick={() => (window.location.href = `/productinfo/${id}`)}
-                  key={index}
-                  className="p-4 md:w-1/4  drop-shadow-lg "
-                >
+                <div key={index} className="p-4 md:w-1/4  drop-shadow-lg ">
                   <div
                     className="h-full border-2 hover:shadow-gray-100 hover:shadow-2xl transition-shadow duration-300 ease-in-out    border-gray-200 border-opacity-60 rounded-2xl overflow-hidden"
                     style={{
@@ -62,7 +59,12 @@ function ProductCard() {
                       color: mode === "dark" ? "white" : "",
                     }}
                   >
-                    <div className="flex justify-center cursor-pointer">
+                    <div
+                      onClick={() =>
+                        (window.location.href = `/productinfo/${id}`)
+                      }
+                      className="flex justify-center cursor-pointer"
+                    >
                       <img
                         className=" rounded-2xl w-full h-80 p-2 hover:scale-110 transition-scale-110  duration-300 ease-in-out"
                         src={imageUrl}
@@ -91,8 +93,8 @@ function ProductCard() {
                       </p>
                       <div className=" flex justify-center">
                         <button
-                          onClick={() => addCart(item)}
                           type="button"
+                          onClick={() => addCart(item)}
                           className="focus:outline-none text-white bg-pink-600 hover:bg-pink-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm w-full  py-2"
                         >
                           Add To Cart
